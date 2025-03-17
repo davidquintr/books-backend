@@ -66,10 +66,11 @@ app.get('/book', async (req, res) => {
 });
 
 app.put('/book', async (req, res) => {
-    const {id, title, author, isbn, copies_availables } = req.body;
+    const {id, title, author, isbn, copies_available } = req.body;
 
-    if (!id || !title || !author || !isbn || !copies_availables) {
-        return throwGenericalResponse(res, 400, false, "Missing fields", { title, author, isbn, copies_availables });
+
+    if (!id || !title || !author || !isbn || !copies_available) {
+        return throwGenericalResponse(res, 400, false, "Missing fields", { title, author, isbn, copies_available });
     }
 
     try {
@@ -79,8 +80,8 @@ app.put('/book', async (req, res) => {
             .input("title", sql.NVarChar, title)
             .input("author", sql.NVarChar, author)
             .input("isbn", sql.NVarChar, isbn)
-            .input("copies_availables", sql.Int, copies_availables)
-        .query("UPDATE books SET title = @title, author = @author, isbn = @isbn, copies_available = @copies_availables WHERE id = @id");
+            .input("copies_available", sql.Int, copies_available)
+        .query("UPDATE books SET title = @title, author = @author, isbn = @isbn, copies_available = @copies_available WHERE id = @id");
         return throwGenericalResponse(res, 200, true, "Book added successfully", {});
     } catch (err) {
         console.error('Error modifying book:', err);
@@ -90,10 +91,12 @@ app.put('/book', async (req, res) => {
 })
 
 app.post('/book', async (req, res) => {
-    const { title, author, isbn, copies_availables } = req.body;
+    const { title, author, isbn, copies_available } = req.body;
 
-    if (!title || !author || !isbn || !copies_availables) {
-        return throwGenericalResponse(res, 400, false, "Missing fields", { title, author, isbn, copies_availables });
+    console.log(req.body)
+
+    if (!title || !author || !isbn || !copies_available) {
+        return throwGenericalResponse(res, 400, false, "Missing fields", { title, author, isbn, copies_available });
     }
 
     try {
@@ -102,9 +105,9 @@ app.post('/book', async (req, res) => {
             .input("title", sql.NVarChar, title)
             .input("author", sql.NVarChar, author)
             .input("isbn", sql.NVarChar, isbn)
-            .input("copies_availables", sql.Int, copies_availables)
+            .input("copies_available", sql.Int, copies_available)
             .input("created_at", sql.DateTime, new Date().toISOString().slice(0, 19).replace('T', ' ') + '.000')
-            .query("INSERT INTO books (title, author, isbn, copies_available, created_at) VALUES (@title, @author, @isbn, @copies_availables, @created_at)");
+            .query("INSERT INTO books (title, author, isbn, copies_available, created_at) VALUES (@title, @author, @isbn, @copies_available, @created_at)");
         return throwGenericalResponse(res, 200, true, "Book added successfully", {});
     } catch (err) {
         console.error('Error adding book:', err);
